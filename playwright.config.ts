@@ -4,6 +4,11 @@ import dotenv from 'dotenv';
 dotenv.config({ path: 'config.env', quiet: true, });
 dotenv.config({ path: 'creds.env', quiet: true, });
 
+const isCI = ['1', 'true', 'yes'].includes((process.env.CI ?? '').toLowerCase());
+if (isCI) {
+  process.env.OPEN_BROWSER = 'false';
+}
+
 // 1. Define all available browser projects
 const browserProjects: Record<string, any> = {
   chrome: {
