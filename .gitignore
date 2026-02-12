@@ -8,5 +8,3 @@ node_modules/
 artifacts/
 /auth.json
 /results_reports
-# /.github/workflows/DockerInt.yml
-/.github/workflows/GithubActions.yml
