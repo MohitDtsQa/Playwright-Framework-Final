@@ -1,0 +1,124 @@
+name: Playwright CI/CD
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Docker image
+        run: docker compose build playwright
+
+      - name: Run Playwright tests in Docker
+        run: docker compose run --rm playwright
+        continue-on-error: true
+
+      - name: Generate Allure report
+        if: always()
+        run: |
+          docker compose run --rm playwright sh -lc '
+            if [ -d "results_reports/allure-results" ]; then
+              npx allure-commandline generate results_reports/allure-results --clean -o results_reports/allure-report
+            else
+              mkdir -p results_reports/allure-report
+            fi
+          '
+
+      - name: Upload Playwright test-results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: results_reports/test-results/
+          retention-days: 30
+
+      - name: Upload custom artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: custom-artifacts
+          path: artifacts/
+          retention-days: 30
+
+      - name: Upload Playwright report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: results_reports/playwright-report/
+          retention-days: 30
+
+      - name: Upload Allure report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: results_reports/allure-report/
+          retention-days: 30
+
+      - name: Prepare Pages content
+        if: always()
+        run: |
+          mkdir -p pages/playwright
+          mkdir -p pages/allure
+          mkdir -p pages/artifacts
+
+          if [ -d "results_reports/playwright-report" ]; then
+            cp -r results_reports/playwright-report/* pages/playwright/
+          fi
+
+          if [ -d "results_reports/allure-report" ]; then
+            cp -r results_reports/allure-report/* pages/allure/
+          fi
+
+          if [ -d "artifacts" ]; then
+            cp -r artifacts/* pages/artifacts/
+          fi
+
+          if [ -d "results_reports/test-results" ]; then
+            cp -r results_reports/test-results/* pages/artifacts/
+          fi
+
+          cp .github/workflows/html-templates/artifacts-index.html pages/artifacts/index.html
+          cp .github/workflows/html-templates/generate-artifacts-list.sh pages/artifacts/generate-list.sh
+          cp .github/workflows/html-templates/landing-page.html pages/index.html
+
+          chmod +x pages/artifacts/generate-list.sh
+          cd pages/artifacts && ./generate-list.sh > artifacts-list.json && cd ../..
+
+      - name: Upload Pages artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages/
+
+      - name: Deploy to GitHub Pages
+        if: always()
+        id: deployment
+        uses: actions/deploy-pages@v4

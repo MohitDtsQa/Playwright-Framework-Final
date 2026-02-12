@@ -1,0 +1,14 @@
+services:
+  playwright:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: docker-test-playwright:latest
+    env_file:
+      - config.env
+      - creds.env
+    shm_size: 2gb
+    volumes:
+      - ./results_reports:/app/results_reports
+      - ./artifacts:/app/artifacts
+    command: ["npx", "playwright", "test"]

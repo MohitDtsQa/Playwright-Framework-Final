@@ -1,0 +1,10 @@
+.git
+.github
+node_modules
+results_reports
+artifacts
+playwright-report
+test-results
+*.log
+creds.env
+config.env

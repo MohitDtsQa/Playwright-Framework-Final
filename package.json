@@ -3,13 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "docker:build": "docker compose build playwright",
+    "docker:test": "docker compose run --rm playwright",
+    "docker:test:ui": "docker compose run --rm -e TEST_DIRECTORY=Tests playwright",
+    "docker:test:api": "docker compose run --rm -e TEST_DIRECTORY=API playwright"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.58.2",
     "@types/node": "^25.0.3",
     "allure-commandline": "^2.36.0",
     "allure-playwright": "^3.4.5",
