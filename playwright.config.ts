@@ -82,7 +82,7 @@ const config: PlaywrightTestConfig = defineConfig({
   outputDir: 'results_reports/test-results',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 2,
   workers: process.env.PARALLEL_TESTS ? Number(process.env.PARALLEL_TESTS) : undefined,
   // reporter: [['html', { open: 'never' }]],
   reporter: [

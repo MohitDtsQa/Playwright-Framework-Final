@@ -1,4 +1,4 @@
-name: Playwright CI/CD
+name: Playwright Docker
 
 on:
   push:
