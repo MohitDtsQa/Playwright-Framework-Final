@@ -7,7 +7,7 @@ export const test = base.extend<{
   page: _.EnhancedPage;
   _resultLogger: void;
 }>({
-  
+
   // Auto fixture: runs for every test (UI + API) and logs final status.
   _resultLogger: [async ({ }, use, testInfo) => {
     const GREEN = '\x1b[32m';
@@ -60,7 +60,6 @@ export const test = base.extend<{
     const context = await browser.newContext({
       recordVideo: recordVideo,
       viewport: isHeaded ? null : { width: 1920, height: 1080 },
-      // viewport: {width: 1920, height: 1080}
     });
 
     await use(context);
@@ -68,7 +67,6 @@ export const test = base.extend<{
     // Close context - this automatically finalizes and saves all videos
     await context.close();
 
-    // console.log(process.env.RECORD_VIDEO === 'on' ? `\n📹 Videos saved to: ${testDirectories.videoDir}\n` : `Video was not Recorded`);
   },
 
   // Fixture: Create enhanced page with custom functionality
@@ -84,7 +82,7 @@ export const test = base.extend<{
     console.log('📹 Video recording:', video ? 'STARTED' : 'NOT STARTED');
 
     // Show intro splash screen
-    await _.showIntroSplash(page, testName, browserName, displayDateTime);
+    Number(process.env.SPLASH_DURATION!) > 0 ? await _.showIntroSplash(page, testName, browserName, displayDateTime) : null;
 
     // Add screenshot helper method to page
     const enhancedPage = page as _.EnhancedPage;

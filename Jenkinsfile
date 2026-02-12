@@ -27,7 +27,6 @@ pipeline {
 
     stage('Run Playwright tests') {
       steps {
-        // xvfb is Linux only, remove it on Windows
         bat 'npx playwright test || exit /b 0'
       }
     }
