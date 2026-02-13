@@ -12,11 +12,16 @@ export class Downloadings {
 
   async Downloadings() {
     const download = await this.downloadPromise;
+    const configuredFolder = process.env.DOWNLOAD_URL?.trim();
+    const folder = configuredFolder
+      ? (_.path.isAbsolute(configuredFolder)
+        ? configuredFolder
+        : _.path.resolve(process.cwd(), configuredFolder))
+      : _.path.resolve(process.cwd(), 'DownloadedFiles');
 
-    if (process.env.DOWNLOAD_URL !== 'No') {
-      const folder = process.env.DOWNLOAD_URL ?? "./DownloadedFiles";
-      const filePath = _.path.join(folder, download.suggestedFilename());
-      await download.saveAs(filePath);
-    }
+    await _.fs.promises.mkdir(folder, { recursive: true });
+
+    const filePath = _.path.join(folder, download.suggestedFilename());
+    await download.saveAs(filePath);
   }
 }
