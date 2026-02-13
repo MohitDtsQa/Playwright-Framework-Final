@@ -11,4 +11,5 @@ services:
     volumes:
       - ./results_reports:/app/results_reports
       - ./artifacts:/app/artifacts
+      - ./DownloadedFiles:/app/DownloadedFiles
     command: ["npx", "playwright", "test"]

@@ -23,5 +23,6 @@ export class Downloadings {
 
     const filePath = _.path.join(folder, download.suggestedFilename());
     await download.saveAs(filePath);
+    console.log(`Downloaded file saved: ${filePath}`);
   }
 }

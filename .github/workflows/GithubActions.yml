@@ -107,6 +107,14 @@ jobs:
           path: results_reports/allure-report/
           retention-days: 30
 
+      - name: Upload downloaded files artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: downloaded-files
+          path: DownloadedFiles/
+          retention-days: 30
+
       # 1️⃣1️⃣ Prepare GitHub Pages content (Reports + Artifacts)
       - name: Prepare Pages content
         if: always()
@@ -114,6 +122,7 @@ jobs:
           mkdir -p pages/playwright
           mkdir -p pages/allure
           mkdir -p pages/artifacts
+          mkdir -p pages/downloads
 
           # Copy reports
           cp -r results_reports/playwright-report/* pages/playwright/
@@ -129,14 +138,23 @@ jobs:
             cp -r results_reports/test-results/* pages/artifacts/
           fi
 
+          # Copy downloaded files
+          if [ -d "DownloadedFiles" ]; then
+            cp -r DownloadedFiles/. pages/downloads/
+          fi
+
           # Copy HTML templates and scripts from .github/workflows/html-templates
           cp .github/workflows/html-templates/artifacts-index.html pages/artifacts/index.html
           cp .github/workflows/html-templates/generate-artifacts-list.sh pages/artifacts/generate-list.sh
+          cp .github/workflows/html-templates/downloads-index.html pages/downloads/index.html
+          cp .github/workflows/html-templates/generate-downloads-list.sh pages/downloads/generate-list.sh
           cp .github/workflows/html-templates/landing-page.html pages/index.html
 
           # Generate artifacts list JSON
           chmod +x pages/artifacts/generate-list.sh
           cd pages/artifacts && ./generate-list.sh > artifacts-list.json && cd ../..
+          chmod +x pages/downloads/generate-list.sh
+          cd pages/downloads && ./generate-list.sh > downloads-list.json && cd ../..
 
       # 1️⃣2️⃣ Upload Pages artifact (ONLY ONCE)
       - name: Upload Pages artifact

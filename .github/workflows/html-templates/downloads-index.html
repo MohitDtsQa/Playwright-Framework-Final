@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Downloaded Files</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        background: #f5f5f5;
+      }
+      h1 {
+        margin-bottom: 20px;
+        color: #333;
+      }
+      .downloads-list {
+        background: white;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .download-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        word-break: break-all;
+      }
+      .download-item:last-child {
+        border-bottom: none;
+      }
+      a {
+        color: #0366d6;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .no-files {
+        color: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Downloaded Files</h1>
+    <div class="downloads-list" id="downloads-container"></div>
+
+    <script>
+      async function loadDownloads() {
+        const container = document.getElementById('downloads-container');
+
+        try {
+          const response = await fetch('downloads-list.json');
+          const data = await response.json();
+
+          if (!data.files || data.files.length === 0) {
+            container.innerHTML = '<p class="no-files">No downloaded files found.</p>';
+            return;
+          }
+
+          data.files.forEach((file) => {
+            const item = document.createElement('div');
+            item.className = 'download-item';
+            item.innerHTML = `<a href="${file.path}" target="_blank" rel="noopener noreferrer">${file.name}</a>`;
+            container.appendChild(item);
+          });
+        } catch (error) {
+          container.innerHTML = '<p class="no-files">No downloaded files found.</p>';
+        }
+      }
+
+      loadDownloads();
+    </script>
+  </body>
+</html>

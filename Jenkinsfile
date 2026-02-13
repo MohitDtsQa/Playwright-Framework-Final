@@ -120,6 +120,7 @@ pipeline {
       // Archive test results
       archiveArtifacts artifacts: 'results_reports\\test-results\\**', allowEmptyArchive: true, fingerprint: true
       archiveArtifacts artifacts: 'artifacts\\**', allowEmptyArchive: true, fingerprint: true
+      archiveArtifacts artifacts: 'DownloadedFiles\\**', allowEmptyArchive: true, fingerprint: true
       archiveArtifacts artifacts: 'results_reports\\allure-results\\**', allowEmptyArchive: true
       
       // Archive screenshots and videos if tests fail
@@ -157,6 +158,7 @@ pipeline {
         def playwrightReportUrl = "${env.BUILD_URL}Playwright_20HTML_20Report/"
         def allureReportUrl = "${env.BUILD_URL}Allure_20HTML_20Report/"
         def artifactsUrl = "${env.BUILD_URL}artifact/"
+        def downloadedFilesUrl = "${env.BUILD_URL}artifact/DownloadedFiles/"
         
         echo """
         ═══════════════════════════════════════════════════════════
@@ -166,6 +168,7 @@ pipeline {
         🎭 Playwright Report: ${playwrightReportUrl}
         📈 Allure Report:     ${allureReportUrl}
         📦 Artifacts:         ${artifactsUrl}
+        📁 Downloaded Files:  ${downloadedFilesUrl}
         
         ═══════════════════════════════════════════════════════════
         """

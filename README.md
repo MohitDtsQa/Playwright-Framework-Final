@@ -35,6 +35,7 @@ npm run docker:test:api
 - `config.env` and `creds.env` are injected at runtime via `docker-compose.yml`.
 - Playwright reports are written to `results_reports/` on the host.
 - Custom test artifacts (videos/screenshots) are written to `artifacts/` on the host.
+- Downloaded files from tests are written to `DownloadedFiles/` on the host.
 - Keep `@playwright/test` (in `package.json`) and Docker image tag (in `Dockerfile`) on the same version.
 - Local run without Docker:
 

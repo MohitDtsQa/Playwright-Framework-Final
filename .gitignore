@@ -6,5 +6,6 @@ node_modules/
 !config.env
 !creds.env
 artifacts/
+/DownloadedFiles/
 /auth.json
 /results_reports
