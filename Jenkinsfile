@@ -211,3 +211,8 @@ pipeline {
     }
   }
 }
+
+
+// Script run in case of reports not showing
+// http://localhost:8080/script
+// System.setProperty("hudson.model.DirectoryBrowserSupport.CSP", "")
